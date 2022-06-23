@@ -1,13 +1,19 @@
-function strout = sign_labeler(mapfile)
-% SIGN_LABELER( mapfile, XY)
+function strout = sign_labeler(mapfile, classList)
+% SIGN_LABELER( mapfile)
 % input:
 %   mapfile - file location for bitmap of map to be labeled
-%   XY (optional) - preset cooordinates
+%   classList (optional) - list of object detection classes
 
 % List of class names and dialog text for classes
-classList = {'Caution', 'Exit', 'FaceMask', 'James', 'Manfred', ...
-           'NamePlate',  'OneWay', 'RERCLarge', 'RedFire', 'Restroom', ...
-           'Safety', 'SixFeet'};
+
+if ~exist('classList','var')
+    % classList = {'Caution', 'Exit', 'FaceMask', 'James', 'Manfred', ...
+    %            'NamePlate',  'OneWay', 'RERCLarge', 'RedFire', 'Restroom', ...
+    %            'Safety', 'SixFeet'};
+    % classList = {'Caution','Exit','RedFire','Restroom','art_chef','art_fish',...
+    %     'art_lakshmi','art_sea','art_so_amer','art_starry','art_wave'}
+    classList = {'BoxPair', 'Fruits', 'Hearts', 'MrsK', 'WorldMap'};
+end
 classdlg = 'Enter class:';
 for c = 1:length(classList)
     classdlg = [classdlg newline num2str(c) ' - ' classList{c}];
@@ -53,9 +59,8 @@ save(replace(string(datetime),":","-")+".mat","classes","orientation","Y", "X");
 strout = sprintf('[');
 for i = 1:length(X)
     strout = append(strout,sprintf('{"Col": %d, "Row": %d, "n_u": %d, "n_v": %d, "n_w": %d, "class": "%s"},\n',...
-        X(i), Y(i), orientation(1,i), orientation(2,i), orientation(2,i), classList{classes(i)}));
+        X(i), Y(i), orientation(1,i), orientation(2,i), orientation(3,i), classList{classes(i)}));
 end
 strout(end-1:end+1) = ']\n';
 fprintf(strout);
 save(replace(string(datetime),":","-")+".mat","classes","orientation","Y", "X","strout");
-
